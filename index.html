@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Calculator</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #fcfcf213;
+            height: 100vh;
+        }
+
+        .card {
+            background-color: rgb(228, 228, 228);
+        }
+
+        select {
+            padding: 4px 8px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body class="justify-content-center d-flex align-items-center">
+    <div id="inp">
+
+        <div class="card w-100 d-flex flex-column justify-content-center shadow-lg " style="height: 70vh;">
+            <div class="card-body d-flex flex-column justify-content-around">
+                <h1 class="card-title text-secondary">Loan Calculator</h1>
+
+                <div class="d-flex flex-column justify-content-around">
+
+                    <select name="Company" id="company" class="mb-1">
+                        <option value="">Select Company</option>
+                        <option value="honda">Honda</option>
+                        <option value="kia">Kia</option>
+                    </select>
+                    <select name="Car" id="car" class="mb-1">
+                        <option value="">Select Car</option>
+                        <option id="car1" value=""></option>
+                        <option id="car2" value=""></option>
+
+                    </select>
+
+                    <select name="Tenure" id="tenure" class="mb-1">
+                        <option value="">Select Tenure</option>
+                        <option value="2y">2 Years</option>
+                        <option value="5y">5 Years</option>
+                    </select>
+
+                    <select name="Deposit" id="dep" class="mb-1">
+                        <option value="">Select Deposit Amount</option>
+                        <option value="15">15%</option>
+                        <option value="50">50%</option>
+                    </select>
+
+                    <input id="submit" type="submit" value="Submit"
+                        class="btn bg-light btn-outline-secondary mt-4 mx-auto" style="width: fit-content;">
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+    <div id="res" class="card d-none">
+        <div class="card-body">
+            <div class="content d-flex flex-column justify-content-around">
+                <h3 class="text-center text-secondary">Vehicle Details</h3>
+                <h5 class="price text-secondary text-dark text-center fw-light"></h5>
+                <h5 class="tPrice text-secondary text-dark text-center fw-light"></h5>
+                <h3 for="#" class="text-uppercase text-center text-secondary">Upfront Payment</h3>
+                <h5 class="upf text-center fw-light"></h5>
+                <h3 for="#" class="text-uppercase text-center text-secondary">monthly payment</h3>
+                <h5 class="mon text-center fw-light"></h5>
+                <h5 class="ins text-center fw-light"></h5>
+
+                <button id="redo" type="submit" value="Submit" class="btn bg-light btn-outline-secondary mt-4 mx-auto"
+                    style="width: fit-content;">Redo</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://kit.fontawesome.com/a0c036dfe4.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+
+        // Putting document.
+        let hondaCarsPrice = [15531500, 6529000]
+        let kiaCarsPrice = [15650000, 3625000]
+
+        let carnPrice = kiaCarsPrice[0]
+        let picaPrice = kiaCarsPrice[1]
+
+        let accPrice = hondaCarsPrice[0]
+        let brvPrice = hondaCarsPrice[1]
+
+
+
+        let car1Show = document.querySelector("#car1");
+        let car2Show = document.querySelector("#car2");
+
+        // Targeting the elements with whom eventlistners are attached
+        let compSel = document.querySelector("#company")
+        let car = document.querySelector("#car")
+        let tenure = document.querySelector("#tenure")
+        let deposit = document.querySelector("#dep")
+        let submit = document.querySelector("#submit")
+        let redo = document.querySelector("#redo")
+        let totalPrice = document.querySelector(".tPrice")
+
+        let input = document.querySelector("#inp")
+        let result = document.querySelector("#res")
+
+
+
+        compSel.addEventListener("change", () => {
+            switch (compSel.value) {
+                case "honda":
+
+                    car1Show.innerText = "Accord";
+                    car1Show.value = "acc"
+
+                    car2Show.innerText = "BRV"
+                    car2Show.value = "brv"
+                    break;
+
+                case "kia":
+                    console.log("kia selected");
+
+                    car1Show.innerText = "Carnival"
+                    car1Show.value = "carn"
+
+                    car2Show.innerText = "Picanto"
+                    car2Show.value = "pic"
+                    break;
+                default:
+                    console.log("didnt catch anything");
+                    break;
+            }
+
+        })
+
+
+        let selectedCar = []
+        let selectedCarPrice = []
+        let selectedCarTotalPrice = []
+        let depositCash = []
+
+        car.addEventListener("change", () => {
+
+            switch (car.value) {
+                case "acc":
+                    selectedCar.shift()
+                    selectedCar.push("Accord")
+                    break;
+
+                case "brv":
+                    selectedCar.shift()
+                    selectedCar.push("BRV")
+                    break;
+
+                case "pic":
+                    selectedCar.shift()
+                    selectedCar.push("Picanto")
+                    break;
+
+                case "carn":
+                    selectedCar.shift()
+                    selectedCar.push("Carnival")
+                    break;
+
+                default:
+                    console.log("didnt catch anything");
+
+                    break;
+            }
+
+        })
+
+        tenure.addEventListener("change", () => {
+
+            switch (tenure.value) {
+                case "2y":
+                    let carSel = selectedCar[0]
+                    let rNum = Math.round
+                    switch (carSel) {
+                        case "Accord":
+                            selectedCarPrice.push(rNum(accPrice / 24));
+                            break;
+                        case "BRV":
+                            selectedCarPrice.push(rNum(brvPrice / 24));
+                            break;
+                        case "Picanto":
+                            selectedCarPrice.push(rNum(picaPrice / 24));
+                            break;
+                        case "Carnival":
+                            selectedCarPrice.push(rNum(carnPrice / 24));
+                            break;
+
+                        default:
+                            console.log("didnt catch anything");
+
+                            break;
+                    }
+
+
+
+
+                case "5y":
+                    let carSel2 = selectedCar[0]
+                    let rNum2 = Math.round
+                    switch (carSel2) {
+                        case "Accord":
+                            selectedCarPrice.push(rNum2((accPrice / 60)));
+                            break;
+                        case "BRV":
+                            selectedCarPrice.push(rNum2(brvPrice / 60));
+                            break;
+                        case "Picanto":
+                            selectedCarPrice.push(rNum2(picaPrice / 60));
+                            break;
+                        case "Carnival":
+                            selectedCarPrice.push(rNum2(carnPrice / 60));
+                            break;
+
+                        default:
+                            console.log("didnt catch anything");
+                            break;
+                    }
+
+                default:
+                    break;
+
+
+            }
+        })
+
+        deposit.addEventListener("change", () => {
+            switch (deposit.value) {
+                case "15":
+
+                    switch (selectedCar[0]) {
+                        case "Accord":
+                            accPrice - (15 / 100) * accPrice
+                            depositCash.push((15 / 100) * accPrice)
+                            selectedCarTotalPrice.push(accPrice)
+                            break;
+                        case "BRV":
+                            brvPrice - (15 / 100) * brvPrice
+                            depositCash.push((15 / 100) * brvPrice)
+                            break;
+                        case "Carnival":
+                            carnPrice - (15 / 100) * carnPrice
+                            depositCash.push((15 / 100) * carnPrice)
+                            break;
+                        case "Picanto":
+                            accPrice - (15 / 100) * picaPrice
+                            depositCash.push((15 / 100) * picaPrice)
+                            break;
+
+                        default:
+                            break;
+                    }
+
+
+                default:
+                    console.log("didnt catch anything");
+
+                    break;
+
+                case "50":
+
+
+                    switch (selectedCar[0]) {
+                        case "Accord":
+                            accPrice - (50 / 100) * accPrice
+                            depositCash.push((50 / 100) * accPrice)
+                            totalPrice.innerText = `Rs ${accPrice}`
+
+                            break;
+                        case "BRV":
+                            brvPrice - (50 / 100) * brvPrice
+                            depositCash.push((50 / 100) * brvPrice)
+                            totalPrice.innerText = `Rs ${brvPrice}`
+
+                            break;
+                        case "Carnival":
+                            carnPrice - (50 / 100) * carnPrice
+                            depositCash.push((50 / 100) * carnPrice)
+                            totalPrice.innerText = `Rs ${carnPrice}`
+
+                            break;
+                        case "Picanto":
+                            accPrice - (50 / 100) * picaPrice
+                            depositCash.push((50 / 100) * picaPrice)
+                            totalPrice.innerText = `Rs ${picaPrice}`
+
+                            break;
+
+                        default:
+                            console.log("didnt catch anything");
+
+                            break;
+                    }
+
+
+
+            }
+        })
+
+
+        submit.addEventListener("click", () => {
+            // For showing result card and hiding input card
+            input.classList.add("d-none")
+            result.classList.remove("d-none")
+
+
+            // Appending Calculated data to result div
+            document.querySelector(".price").innerText = `${selectedCar[0]}`
+            document.querySelector(".upf").innerText = `Rs ${depositCash[0]}`
+            document.querySelector(".ins").innerText = `Rs ${selectedCarPrice[0]}/Month`
+
+
+            switch (tenure.value) {
+                case "2y":
+                    document.querySelector(".mon").innerText = "24 Months"
+                    break;
+
+                case "5y":
+                    document.querySelector(".mon").innerText = "60 Months"
+                    break;
+
+                default:
+                    break;
+            }
+        })
+
+
+        redo.addEventListener("click", () => {
+        // For showing input card and hiding result card
+            location.reload()
+            input.classList.remove("d-none")
+            result.classList.add("d-none")
+
+
+        })
+
+
+
+    </script>
+</body>
+
+</html>
